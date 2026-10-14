@@ -15,8 +15,11 @@ import { openAuthSessionAsync } from "expo-web-browser";
 
 export const config = {
   platform: "com.jsm.restate",
-  endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
-  projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
+  // Fall back to Appwrite Cloud so the client can still be constructed (e.g. during
+  // static web export) when the env vars are missing.
+  endpoint:
+    process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1",
+  projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || "",
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
   galleriesCollectionId:
     process.env.EXPO_PUBLIC_APPWRITE_GALLERIES_COLLECTION_ID,
@@ -29,8 +32,8 @@ export const config = {
 
 export const client = new Client();
 client
-  .setEndpoint(config.endpoint!)
-  .setProject(config.projectId!)
+  .setEndpoint(config.endpoint)
+  .setProject(config.projectId)
   .setPlatform(config.platform!);
 
 export const avatar = new Avatars(client);
