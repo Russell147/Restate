@@ -28,10 +28,19 @@ export const config = {
 };
 
 export const client = new Client();
-client
-  .setEndpoint(config.endpoint!)
-  .setProject(config.projectId!)
-  .setPlatform(config.platform!);
+// Guard against missing env vars (e.g. during static web export) so that
+// module evaluation doesn't crash the build.
+if (config.endpoint) {
+  client.setEndpoint(config.endpoint);
+} else {
+  console.warn(
+    "EXPO_PUBLIC_APPWRITE_ENDPOINT is not set; Appwrite requests will fail."
+  );
+}
+if (config.projectId) {
+  client.setProject(config.projectId);
+}
+client.setPlatform(config.platform);
 
 export const avatar = new Avatars(client);
 export const account = new Account(client);
